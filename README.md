@@ -17,9 +17,10 @@
 
 ## 📸 Preview
 
-![SYNALUM AI Mentor Chat UI](link-to-your-image-here)
+![SYNALUM AI Mentor Chat UI]
 
-> *Replace the placeholder above with your own screenshot showing the AI successfully answering a query.*
+> <img width="1920" height="2135" alt="chatbot ai" src="https://github.com/user-attachments/assets/867604b6-2979-4137-a445-f29026a2aafc" />
+
 
 ---
 

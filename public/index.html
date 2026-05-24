@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SYNALUM AI Mentor — Your Gen Z Academic Advisor</title>
+    <meta
+      name="description"
+      content="SYNALUM AI Mentor is your brutally honest Gen Z academic advisor. Get structured learning roadmaps and motivational feedback for tech students, in casual Indonesian slang."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Ambient background blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="app-wrapper">
+      <!-- ===== BENTO SIDEBAR ===== -->
+      <aside class="sidebar">
+        <!-- Brand card -->
+        <div class="bento-card brand-card">
+          <div class="avatar-wrap">
+            <img src="avatar.png" alt="SYNALUM AI Avatar" class="avatar-img" />
+            <span class="status-dot"></span>
+          </div>
+          <h1 class="brand-name">SYNALUM AI</h1>
+          <p class="brand-tagline">Mentor</p>
+        </div>
+
+        <!-- Stats cards -->
+        <div class="bento-card stat-card">
+          <span class="stat-icon">🎯</span>
+          <div>
+            <p class="stat-label">Mode</p>
+            <p class="stat-value">Brutally Honest</p>
+          </div>
+        </div>
+
+        <div class="bento-card stat-card">
+          <span class="stat-icon">🧠</span>
+          <div>
+            <p class="stat-label">Model</p>
+            <p class="stat-value">Gemini 2.5 Flash</p>
+          </div>
+        </div>
+
+        <div class="bento-card stat-card">
+          <span class="stat-icon">🌶️</span>
+          <div>
+            <p class="stat-label">Temp</p>
+            <p class="stat-value">0.8 — Creative</p>
+          </div>
+        </div>
+
+        <!-- Suggestions -->
+        <div class="bento-card suggestions-card">
+          <p class="suggestions-title">💡 Coba tanya:</p>
+          <ul class="suggestions-list">
+            <li class="suggestion-chip" data-text="Buatin roadmap belajar Web Development dari nol dong">🗺️ Roadmap Web Dev</li>
+            <li class="suggestion-chip" data-text="Kasih tau aku cara belajar Data Science yang efektif">📊 Belajar Data Science</li>
+            <li class="suggestion-chip" data-text="Aku mager banget buat ngoding, motivasi dong">🔥 Aku butuh motivasi</li>
+            <li class="suggestion-chip" data-text="Gimana caranya masuk kerja di perusahaan tech besar?">💼 Tips karir tech</li>
+          </ul>
+        </div>
+
+        <!-- New chat button -->
+        <button class="bento-card new-chat-btn" id="newChatBtn">
+          <span>✨</span> New Chat
+        </button>
+      </aside>
+
+      <!-- ===== MAIN CHAT AREA ===== -->
+      <main class="chat-main">
+        <!-- Header -->
+        <header class="chat-header">
+          <div class="header-left">
+            <div class="header-avatar">
+              <img src="avatar.png" alt="SYNALUM" />
+            </div>
+            <div>
+              <h2 class="header-title">SYNALUM AI Mentor</h2>
+              <p class="header-subtitle">Gen Z Academic Advisor · Online</p>
+            </div>
+          </div>
+          <div class="header-badge">
+            <span class="pulse-ring"></span>
+            <span>Live</span>
+          </div>
+        </header>
+
+        <!-- Messages -->
+        <div class="messages-container" id="messagesContainer">
+          <!-- Welcome message -->
+          <div class="message-row ai-row" id="welcomeMessage">
+            <div class="message-avatar-wrap">
+              <img src="avatar.png" alt="AI" class="message-avatar" />
+            </div>
+            <div class="message-bubble ai-bubble">
+              <p>Haloo bestie! 👋 Gue <strong>SYNALUM AI Mentor</strong> — advisor lo yang paling jujur, paling gaskeun, dan paling nggak mau liat lo stuck!</p>
+              <p style="margin-top: 0.5rem;">Mau tanya soal <strong>roadmap belajar</strong>, <strong>tips karir tech</strong>, atau lo lagi butuh <strong>dosis motivasi</strong> yang nggak nge-PHP-in? Gaskeun tanya aja bro, santuy! 🚀</p>
+              <span class="message-time" id="welcomeTime"></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Input area -->
+        <div class="input-area">
+          <div class="input-wrapper">
+            <textarea
+              id="userInput"
+              class="chat-input"
+              placeholder="Tanya apa aja ke SYNALUM... (Enter to send, Shift+Enter for newline)"
+              rows="1"
+              maxlength="2000"
+            ></textarea>
+            <div class="input-actions">
+              <span class="char-count" id="charCount">0/2000</span>
+              <button class="send-btn" id="sendBtn" aria-label="Send message">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+              </button>
+            </div>
+          </div>
+          <p class="input-disclaimer">SYNALUM mungkin bisa salah. Verifikasi info penting ya bestie 🙏</p>
+        </div>
+      </main>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

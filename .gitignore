@@ -1,3 +1,8 @@
 node_modules/
 .env
-package_lock.json
+.env.local
+*.log
+coverage/
+playwright-report/
+test-results/
+.DS_Store

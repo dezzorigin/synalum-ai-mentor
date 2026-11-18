@@ -1,0 +1,110 @@
+name: CI
+
+# CI untuk SYNALUM AI Mentor (repo #32 — Express + Gemini, backend pertama
+# yang proper). Variasi sesuai stack: tes API (node:test), validasi statis
+# + html-validate (Node 24 — html-validate 11.21.1 crash di Node 20 karena
+# fs.globSync baru ada di Node 22), advisory-sweep OSV, smoke end-to-end
+# mode demo, dan build image Docker.
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  # ── Tes API (21 tes, tanpa API key / jaringan eksternal) ───────────────
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run API tests
+        run: npm test
+
+  # ── Pemeriksaan statis: referensi lokal, secret, gate P0, HTML ────────
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check links + sapu secret + gate anti-slop P0 + html-validate
+        run: npm run validate
+
+  # ── Advisory sweep (OSV batch, tanpa auth) ─────────────────────────────
+  # Pola repo #24–#32: 1 POST ke api.osv.dev/v1/querybatch untuk semua
+  # paket produksi. JANGAN ganti ke GitHub Advisory DB API + GITHUB_TOKEN
+  # (gagal deterministik 401 di CI orteam — token per-job bermasalah).
+  advisory-sweep:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: OSV sweep (produksi saja, HIGH/CRITICAL = gagal)
+        run: python3 scripts/advisory-sweep.py
+
+  # ── Smoke end-to-end mode demo ─────────────────────────────────────────
+  smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Smoke (health + chat + UI, mode demo)
+        run: npm run smoke
+
+  # ── Build image Docker (verifikasi Dockerfile + .dockerignore) ────────
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t synalum-ai-mentor:test .
+
+      - name: Jalankan container mode demo + cek health
+        # Pola repo #29: JANGAN `curl | grep -q` + pipefail (grep -q
+        # menutup pipe, curl mati SIGPIPE exit 23) — curl ke file dulu,
+        # baru grep file-nya.
+        run: |
+          docker run -d --name synalum-smoke -p 3100:3000 synalum-ai-mentor:test
+          for i in $(seq 1 20); do
+            curl -s -o /tmp/health.json -w "%{http_code}" http://127.0.0.1:3100/api/health > /tmp/code.txt || true
+            if grep -q 200 /tmp/code.txt; then
+              break
+            fi
+            sleep 2
+          done
+          cat /tmp/health.json
+          grep -q '"mode":"demo"' /tmp/health.json
+          docker rm -f synalum-smoke

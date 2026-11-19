@@ -1,137 +1,151 @@
 <!DOCTYPE html>
 <html lang="id">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SYNALUM AI Mentor — Your Gen Z Academic Advisor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNALUM AI Mentor — Mentor Akademik Gen Z</title>
     <meta
       name="description"
-      content="SYNALUM AI Mentor is your brutally honest Gen Z academic advisor. Get structured learning roadmaps and motivational feedback for tech students, in casual Indonesian slang."
-    />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      content="SYNALUM AI Mentor adalah mentor akademik Gen Z: roadmap belajar terstruktur dan feedback jujur buat mahasiswa tech, dalam bahasa slang Indonesia.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="style.css" />
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
   </head>
   <body>
-    <!-- Ambient background blobs -->
-    <div class="bg-blob blob-1"></div>
-    <div class="bg-blob blob-2"></div>
-    <div class="bg-blob blob-3"></div>
-
     <div class="app-wrapper">
-      <!-- ===== BENTO SIDEBAR ===== -->
-      <aside class="sidebar">
-        <!-- Brand card -->
-        <div class="bento-card brand-card">
+      <!-- ===== SIDEBAR ===== -->
+      <aside class="sidebar" id="sidebar" aria-label="Tentang mentor">
+        <div class="brand-card">
           <div class="avatar-wrap">
-            <img src="avatar.png" alt="SYNALUM AI Avatar" class="avatar-img" />
-            <span class="status-dot"></span>
+            <img src="avatar.png" alt="Avatar SYNALUM AI Mentor" class="avatar-img">
+            <span class="status-dot" aria-hidden="true"></span>
+            <svg class="pen-circle" viewBox="0 0 100 100" aria-hidden="true">
+              <ellipse cx="50" cy="50" rx="46" ry="46" />
+            </svg>
           </div>
           <h1 class="brand-name">SYNALUM AI</h1>
-          <p class="brand-tagline">Mentor</p>
+          <svg class="pen-underline" viewBox="0 0 120 8" aria-hidden="true">
+            <path d="M2 5 C 25 2, 45 7, 70 4 S 105 2, 118 5" />
+          </svg>
+          <p class="brand-tagline">Mentor akademik</p>
         </div>
 
-        <!-- Stats cards -->
-        <div class="bento-card stat-card">
-          <span class="stat-icon">🎯</span>
+        <div class="info-card">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="9" />
+            <circle cx="12" cy="12" r="4.5" />
+            <circle cx="12" cy="12" r="1" fill="currentColor" />
+          </svg>
           <div>
-            <p class="stat-label">Mode</p>
-            <p class="stat-value">Brutally Honest</p>
+            <p class="info-label">Mode</p>
+            <p class="info-value" id="modeCardValue">Memeriksa…</p>
           </div>
         </div>
 
-        <div class="bento-card stat-card">
-          <span class="stat-icon">🧠</span>
+        <div class="info-card">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect x="5" y="5" width="14" height="14" rx="2" />
+            <rect x="9.5" y="9.5" width="5" height="5" />
+            <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+          </svg>
           <div>
-            <p class="stat-label">Model</p>
-            <p class="stat-value">Gemini 2.5 Flash</p>
+            <p class="info-label">Model</p>
+            <p class="info-value">Gemini 2.5 Flash</p>
           </div>
         </div>
 
-        <div class="bento-card stat-card">
-          <span class="stat-icon">🌶️</span>
+        <div class="info-card">
+          <svg class="info-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M10 13.5V4a2 2 0 1 1 4 0v9.5a4 4 0 1 1-4 0Z" />
+            <path d="M12 9v6" />
+          </svg>
           <div>
-            <p class="stat-label">Temp</p>
-            <p class="stat-value">0.8 — Creative</p>
+            <p class="info-label">Temperatur</p>
+            <p class="info-value">0.8 — Kreatif</p>
           </div>
         </div>
 
-        <!-- Suggestions -->
-        <div class="bento-card suggestions-card">
-          <p class="suggestions-title">💡 Coba tanya:</p>
+        <div class="suggestions-card">
+          <p class="suggestions-title">Coba tanya</p>
           <ul class="suggestions-list">
-            <li class="suggestion-chip" data-text="Buatin roadmap belajar Web Development dari nol dong">🗺️ Roadmap Web Dev</li>
-            <li class="suggestion-chip" data-text="Kasih tau aku cara belajar Data Science yang efektif">📊 Belajar Data Science</li>
-            <li class="suggestion-chip" data-text="Aku mager banget buat ngoding, motivasi dong">🔥 Aku butuh motivasi</li>
-            <li class="suggestion-chip" data-text="Gimana caranya masuk kerja di perusahaan tech besar?">💼 Tips karir tech</li>
+            <li class="suggestion-chip" data-text="Buatin roadmap belajar Web Development dari nol dong">Roadmap Web Dev</li>
+            <li class="suggestion-chip" data-text="Kasih tau aku cara belajar Data Science yang efektif">Belajar Data Science</li>
+            <li class="suggestion-chip" data-text="Aku mager banget buat ngoding, motivasi dong">Aku butuh motivasi</li>
+            <li class="suggestion-chip" data-text="Gimana caranya masuk kerja di perusahaan tech besar?">Tips karir tech</li>
           </ul>
         </div>
 
-        <!-- New chat button -->
-        <button class="bento-card new-chat-btn" id="newChatBtn">
-          <span>✨</span> New Chat
+        <p class="mentor-note">
+          <span class="mentor-note-label">Catatan mentor</span>
+          Jawaban di sini jujur, bukan manis-manis. Kalau ada yang salah,
+          verifikasi dulu sebelum dipakai.
+        </p>
+
+        <button class="new-chat-btn" id="newChatBtn" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" />
+          </svg>
+          Chat baru
         </button>
       </aside>
 
       <!-- ===== MAIN CHAT AREA ===== -->
       <main class="chat-main">
-        <!-- Header -->
         <header class="chat-header">
           <div class="header-left">
+            <button class="menu-btn" id="menuBtn" type="button" aria-label="Buka panel mentor" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
             <div class="header-avatar">
-              <img src="avatar.png" alt="SYNALUM" />
+              <img src="avatar.png" alt="SYNALUM">
             </div>
             <div>
               <h2 class="header-title">SYNALUM AI Mentor</h2>
-              <p class="header-subtitle">Gen Z Academic Advisor · Online</p>
+              <p class="header-subtitle">Mentor akademik Gen Z · Bahasa slang Indonesia</p>
             </div>
           </div>
-          <div class="header-badge">
-            <span class="pulse-ring"></span>
-            <span>Live</span>
-          </div>
+          <p class="header-badge" id="modeBadge" role="status">Memeriksa mode…</p>
         </header>
 
-        <!-- Messages -->
         <div class="messages-container" id="messagesContainer">
-          <!-- Welcome message -->
           <div class="message-row ai-row" id="welcomeMessage">
             <div class="message-avatar-wrap">
-              <img src="avatar.png" alt="AI" class="message-avatar" />
+              <img src="avatar.png" alt="AI" class="message-avatar">
             </div>
             <div class="message-bubble ai-bubble">
-              <p>Haloo bestie! 👋 Gue <strong>SYNALUM AI Mentor</strong> — advisor lo yang paling jujur, paling gaskeun, dan paling nggak mau liat lo stuck!</p>
-              <p style="margin-top: 0.5rem;">Mau tanya soal <strong>roadmap belajar</strong>, <strong>tips karir tech</strong>, atau lo lagi butuh <strong>dosis motivasi</strong> yang nggak nge-PHP-in? Gaskeun tanya aja bro, santuy! 🚀</p>
+              <p>Haloo bestie! Gue <strong>SYNALUM AI Mentor</strong> — advisor lo yang paling jujur, paling gaskeun, dan paling nggak mau liat lo stuck!</p>
+              <p style="margin-top: 0.5rem;">Mau tanya soal <strong>roadmap belajar</strong>, <strong>tips karir tech</strong>, atau lo lagi butuh <strong>dosis motivasi</strong> yang nggak nge-PHP-in? Gaskeun tanya aja bro, santuy!</p>
               <span class="message-time" id="welcomeTime"></span>
             </div>
           </div>
         </div>
 
-        <!-- Input area -->
         <div class="input-area">
           <div class="input-wrapper">
+            <label class="visually-hidden" for="userInput">Tulis pertanyaanmu</label>
             <textarea
               id="userInput"
               class="chat-input"
-              placeholder="Tanya apa aja ke SYNALUM... (Enter to send, Shift+Enter for newline)"
+              placeholder="Tanya apa aja ke SYNALUM… (Enter untuk kirim, Shift+Enter baris baru)"
               rows="1"
               maxlength="2000"
             ></textarea>
             <div class="input-actions">
               <span class="char-count" id="charCount">0/2000</span>
-              <button class="send-btn" id="sendBtn" aria-label="Send message">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+              <button class="send-btn" id="sendBtn" type="button" aria-label="Kirim pesan">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M22 2 11 13" />
+                  <path d="M22 2 15 22l-4-9-9-4 20-7Z" />
                 </svg>
               </button>
             </div>
           </div>
-          <p class="input-disclaimer">SYNALUM mungkin bisa salah. Verifikasi info penting ya bestie 🙏</p>
+          <p class="input-disclaimer">SYNALUM mungkin bisa salah. Verifikasi info penting ya bestie.</p>
         </div>
       </main>
     </div>

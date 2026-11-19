@@ -1,6 +1,6 @@
 /* ============================================================
    SYNALUM AI MENTOR — Frontend Script
-   Handles: chat history, fetch /api/chat, UI rendering
+   Handles: chat history, fetch /api/chat, UI rendering, mode badge.
    ============================================================ */
 
 // ── State ────────────────────────────────────────────────────
@@ -14,31 +14,65 @@ const sendBtn = document.getElementById('sendBtn');
 const charCount = document.getElementById('charCount');
 const newChatBtn = document.getElementById('newChatBtn');
 const welcomeTime = document.getElementById('welcomeTime');
+const modeBadge = document.getElementById('modeBadge');
+const modeCardValue = document.getElementById('modeCardValue');
+const sidebar = document.getElementById('sidebar');
+const menuBtn = document.getElementById('menuBtn');
 
 // ── Init ─────────────────────────────────────────────────────
 welcomeTime.textContent = formatTime(new Date());
+refreshMode();
+
+// ── Mode badge (jujur: demo vs live) ──────────────────────────
+async function refreshMode() {
+  try {
+    const res = await fetch('/api/health');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.mode === 'demo') {
+      modeBadge.textContent = 'Mode demo — balasan contoh';
+      modeBadge.classList.add('is-demo');
+      modeCardValue.textContent = 'Demo (tanpa API key)';
+    } else {
+      modeBadge.textContent = `Live · ${data.model || 'Gemini'}`;
+      modeBadge.classList.add('is-live');
+      modeCardValue.textContent = 'Live';
+    }
+  } catch {
+    modeBadge.textContent = 'Mode tidak diketahui';
+    modeCardValue.textContent = 'Tidak diketahui';
+  }
+}
+
+// ── Sidebar (mobile) ─────────────────────────────────────────
+menuBtn.addEventListener('click', () => {
+  const open = sidebar.classList.toggle('open');
+  menuBtn.setAttribute('aria-expanded', String(open));
+});
 
 // ── Utilities ────────────────────────────────────────────────
 function formatTime(date) {
   return date.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
 }
 
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
 /**
- * Lightweight markdown → HTML converter
- * Handles: bold, italic, inline code, fenced code blocks, ordered/unordered lists, headings
+ * Markdown ringan -> HTML.
+ * Mendukung: bold, italic, inline code, fenced code, heading, list
+ * bernomor & tak bernomor. HTML mentah di-escape dulu (anti-XSS).
+ * Perbaikan dari v1: list bernomor kini dibungkus <ol> yang benar
+ * (dulu item <li> bernomor tercecer tanpa pembungkus).
  */
 function renderMarkdown(text) {
-  let html = text;
-
-  // Escape raw HTML (safety)
-  html = html
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+  let html = escapeHtml(text);
 
   // Fenced code blocks ```lang\n...\n```
   html = html.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, code) => {
-    return `<pre><code class="${lang ? 'lang-' + lang : ''}">${code.trim()}</code></pre>`;
+    const cls = lang ? ` class="lang-${lang}"` : '';
+    return `<pre><code${cls}>${code.trim()}</code></pre>`;
   });
 
   // Headings
@@ -49,30 +83,42 @@ function renderMarkdown(text) {
   // Bold & italic
   html = html.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
 
   // Inline code
   html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
 
-  // Unordered lists (- or *)
-  html = html.replace(/^[\-\*] (.+)$/gm, '<li>$1</li>');
-  html = html.replace(/(<li>.*<\/li>\n?)+/g, (match) => `<ul>${match}</ul>`);
+  // Lists — diproses per baris agar <ol>/<ul> terbungkus benar.
+  const lines = html.split('\n');
+  const out = [];
+  let listTag = null;
+  const closeList = () => { if (listTag) { out.push(`</${listTag}>`); listTag = null; } };
+  for (const line of lines) {
+    const ordered = line.match(/^\d+\. (.+)$/);
+    const unordered = line.match(/^[-*] (.+)$/);
+    const tag = ordered ? 'ol' : unordered ? 'ul' : null;
+    if (tag) {
+      if (listTag !== tag) { closeList(); out.push(`<${tag}>`); listTag = tag; }
+      out.push(`<li>${ordered ? ordered[1] : unordered[1]}</li>`);
+    } else {
+      closeList();
+      out.push(line);
+    }
+  }
+  closeList();
+  html = out.join('\n');
 
-  // Ordered lists (1. 2. etc)
-  html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-
-  // Paragraphs: double newline
+  // Paragraf: blok dipisah baris kosong ganda.
   html = html
     .split(/\n{2,}/)
     .map((block) => {
-      // Don't wrap elements that are already block-level
       if (/^<(h[1-3]|ul|ol|pre|li)/.test(block.trim())) return block;
       const trimmed = block.trim();
       return trimmed ? `<p>${trimmed}</p>` : '';
     })
     .join('\n');
 
-  // Single line breaks inside paragraphs → <br>
+  // Baris tunggal di dalam paragraf -> <br>
   html = html.replace(/([^>])\n([^<])/g, '$1<br>$2');
 
   return html;
@@ -92,7 +138,7 @@ function createUserMessage(text) {
   row.className = 'message-row user-row';
   row.innerHTML = `
     <div class="message-bubble user-bubble">
-      <p>${text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>')}</p>
+      <p>${escapeHtml(text).replace(/\n/g, '<br>')}</p>
       <span class="message-time">${formatTime(new Date())}</span>
     </div>`;
   return row;
@@ -107,10 +153,8 @@ function createThinkingBubble() {
       <img src="avatar.png" alt="AI" class="message-avatar" />
     </div>
     <div class="message-bubble ai-bubble thinking-bubble">
-      <div class="dots-anim">
-        <span></span><span></span><span></span>
-      </div>
-      <span class="thinking-label">Thinking...</span>
+      <div class="dots-anim" aria-hidden="true"><span></span><span></span><span></span></div>
+      <span class="thinking-label">Mentor lagi mikir…</span>
     </div>`;
   return row;
 }
@@ -165,7 +209,7 @@ async function sendMessage() {
 
     if (!response.ok || data.error) {
       const errMsg = data.error || `Error ${response.status}: Gagal dapat respons.`;
-      const errRow = createAIMessage(`<p>❌ ${errMsg}</p>`, true);
+      const errRow = createAIMessage(`<p><strong>Gagal:</strong> ${escapeHtml(errMsg)}</p>`, true);
       messagesContainer.appendChild(errRow);
     } else {
       const aiText = data.reply || '';
@@ -176,7 +220,7 @@ async function sendMessage() {
     }
   } catch (err) {
     thinkingRow.remove();
-    const errRow = createAIMessage(`<p>❌ Koneksi gagal, bestie. Cek internet lo atau coba lagi nanti 😭</p>`, true);
+    const errRow = createAIMessage('<p><strong>Koneksi gagal, bestie.</strong> Cek internet lo atau coba lagi nanti.</p>', true);
     messagesContainer.appendChild(errRow);
     console.error('Fetch error:', err);
   }
@@ -195,7 +239,7 @@ function setUIState(enabled) {
 function updateCharCount() {
   const len = userInput.value.length;
   charCount.textContent = `${len}/2000`;
-  charCount.style.color = len > 1800 ? '#f87171' : '';
+  charCount.style.color = len > 1800 ? '#C02E22' : '';
 }
 
 function autoResize() {
@@ -228,6 +272,8 @@ document.querySelectorAll('.suggestion-chip').forEach((chip) => {
     updateCharCount();
     autoResize();
     userInput.focus();
+    sidebar.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
   });
 });
 
